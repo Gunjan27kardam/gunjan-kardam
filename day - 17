@@ -1,0 +1,96 @@
+/// Z-Function	
+int zAlgorithm(string s, string p, int n, int m)
+{
+	int count=0;
+	for(int i=0;i<n-m+1;i++){
+		string ans=s.substr(i,m);
+		if(ans==p){
+			count++;
+		}
+	}
+	return count;
+}
+
+/// 	KMP algo / LPS(pi) array	
+#include<bits/stdc++.h>
+vector<int> lps(string p , int n){
+   vector<int>lp(n);
+   int len =0;
+   int i= 1;
+   lp[0] =0;
+   while(i<n){
+       if(p[i]== p[len]){
+           len++;
+           lp[i] =len;     
+           i++;
+       }
+       else{
+
+           //triky part
+           if(len != 0){
+               len = lp[len-1];
+
+           }
+           else{
+               lp[i]=0;
+               i++;
+           }
+       }
+   }
+   return lp;
+}
+bool findPattern(string p, string s)
+{
+   // Write your code here.
+   int m = p.size();
+   int n = s.size();
+
+   vector<int>pi = lps(p,m);
+
+   int i = 0; //index of s
+   int j= 0; //index of p
+   while(i<n){
+
+       if(s[i] == p[j]){
+           i++;
+           j++;
+       }
+       if(j >= m) return true;
+       else if( i<n && s[i] != p[j]){
+           if(j!=0){
+               j = pi[j-1];
+           }
+           else{
+               i= i+1;
+           }
+       }
+   }
+
+   return false;
+}
+
+//// 	Minimum characters needed to be inserted in the beginning to make it palindromic
+
+/Using KMP algorithm
+#include<bits/stdc++.h>
+int minCharsforPalindrome(string str) {
+	// Write your code here.
+      string input = str + "@";
+        reverse(str.begin(),str.end());
+        input += str;
+        int n = input.size();
+        vector<int>lps(n);
+        lps[0] = 0;
+        for(int i = 1 ; i < n ; ++i){
+            int x = lps[i-1];
+            while(input[x] != input[i]){
+                if(x == 0){
+                    x = -1;
+                    break;
+                }
+                x = lps[x-1];
+            }
+            lps[i] = x + 1;
+        }
+        return str.size() - lps[n-1];
+   }
