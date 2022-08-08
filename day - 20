@@ -1,0 +1,95 @@
+// Populate Next Right pointers of Tree	
+void connectNodes(BinaryTreeNode< int > *root) {
+    // Write your code here.
+    if(!root) return;
+    queue<BinaryTreeNode<int> *> q;
+    q.push(root);
+
+    while(!q.empty()){
+        int size = q.size();
+        while(size--){
+            BinaryTreeNode<int> * node = q.front(); q.pop();
+            if(size > 0) node->next = q.front();
+            if(node->left) q.push(node->left);
+            if(node->right) q.push(node->right);
+        } 
+    }
+}
+
+  // Search given Key in BST	
+  bool searchInBST(BinaryTreeNode<int> *root, int x) {
+    // Base Case :
+    if ( root == NULL) return false;
+    // Small cal. :
+    if(root -> data == x) return true;
+    // Rec. call :
+    if(root -> data < x ) return searchInBST(root -> right,x);
+    if(root -> data > x ) return searchInBST(root -> left,x); 
+}
+
+  //Construct BST from given keys	
+  TreeNode<int> *helper(vector<int> &arr, int st, int end)
+{
+    if(st > end)
+        return NULL;
+    int mid = (st+end)/2;
+    TreeNode<int> *curr = new TreeNode<int> (arr[mid]);
+
+    curr->left = helper(arr, st, mid-1);
+    curr->right = helper(arr, mid+1, end);
+
+    return curr;
+}
+
+TreeNode<int>* sortedArrToBST(vector<int> &arr, int n)
+{
+    // Write your code here.
+    if(n==0)
+        return NULL;
+    return helper(arr, 0, n-1);
+}
+
+  //Construct BST from preorder traversal	
+  class Solution {
+public:
+   TreeNode* bstFromInorder(int s, int e, vector<int>& inorder) {
+       //base condition
+       if(s>e)
+           return NULL;
+
+       int mid = (s+e)/2;
+       TreeNode* root = new TreeNode(inorder[mid]);
+       root->left = bstFromInorder(s, mid-1, inorder);
+       root->right = bstFromInorder(mid+1, e, inorder);
+
+       return root;
+   }
+
+   TreeNode* bstFromPreorder(vector<int>& preorder) {
+       sort(preorder.begin(), preorder.end());
+
+       return bstFromInorder(0, preorder.size()-1, preorder);
+   }
+};
+
+  //Check is a BT is BST or not
+  #include<bits/stdc++.h>
+void inorder(BinaryTreeNode<int> *root,vector<int>&v){
+    if(root){
+        inorder(root->left,v);
+        v.push_back(root->data);
+        inorder(root->right,v);
+
+    }
+}
+
+bool validateBST(BinaryTreeNode<int> *root) {
+   vector<int>v;
+    inorder(root,v);
+    for(int i=1;i<v.size();i++){
+        if(v[i]<v[i-1]){
+            return false;
+        }
+    }
+    return true;
+}
