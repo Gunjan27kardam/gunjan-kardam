@@ -1,0 +1,103 @@
+// Max Product Subarray
+#include<bits/stdc++.h>
+using namespace std;
+
+int maxProductSubArray(vector<int>& nums) {
+    int result = INT_MIN;
+    for(int i=0;i<nums.size()-1;i++) {
+        for(int j=i+1;j<nums.size();j++) {
+            int prod = 1;
+            for(int k=i;k<=j;k++) 
+                prod *= nums[k];
+            result = max(result,prod);    
+        }
+    }
+    return result;
+}
+
+int main() {
+    vector<int> nums = {1,2,-3,0,-4,-5};
+    cout<<"The maximum product subarray: "<<maxProductSubArray(nums);
+    return 0;
+}
+
+//Longest Common Subsequence	
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int lcsUtil(string& s1, string& s2, int ind1, int ind2,  vector<vector<int>>& dp){
+
+    if(ind1<0 || ind2<0)
+        return 0;
+        
+    if(dp[ind1][ind2]!=-1)
+        return dp[ind1][ind2];
+    
+    if(s1[ind1] == s2[ind2])
+        return dp[ind1][ind2] = 1 + lcsUtil(s1,s2,ind1-1,ind2-1,dp);
+    
+    else 
+        return dp[ind1][ind2] = 0 + max(lcsUtil(s1,s2,ind1,ind2-1,dp),lcsUtil
+       (s1,s2,ind1-1,ind2,dp));
+   
+}
+
+
+int lcs(string s1, string s2) {
+    
+    int n=s1.size();
+    int m=s2.size();
+
+    vector<vector<int>> dp(n,vector<int>(m,-1));
+    return lcsUtil(s1,s2,n-1,m-1,dp);
+}
+
+int main() {
+
+  string s1= "acd";
+  string s2= "ced";
+                                 
+  cout<<"The Length of Longest Common Subsequence is "<<lcs(s1,s2);
+}
+//	0-1 Knapsack	
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int knapsackUtil(vector<int>& wt, vector<int>& val, int ind, int W, vector<vector<int>>& dp){
+
+    if(ind == 0){
+        if(wt[0] <=W) return val[0];
+        else return 0;
+    }
+    
+    if(dp[ind][W]!=-1)
+        return dp[ind][W];
+        
+    int notTaken = 0 + knapsackUtil(wt,val,ind-1,W,dp);
+    
+    int taken = INT_MIN;
+    if(wt[ind] <= W)
+        taken = val[ind] + knapsackUtil(wt,val,ind-1,W-wt[ind],dp);
+        
+    return dp[ind][W] = max(notTaken,taken);
+}
+
+
+int knapsack(vector<int>& wt, vector<int>& val, int n, int W){
+    
+    vector<vector<int>> dp(n,vector<int>(W+1,-1));
+    return knapsackUtil(wt, val, n-1, W, dp);
+}
+
+int main() {
+
+  vector<int> wt = {1,2,4,5};
+  vector<int> val = {5,4,8,6};
+  int W=5;
+  
+  int n = wt.size();
+                                 
+  cout<<"The Maximum value of items, thief can steal is " <<knapsack(wt,val,n,W);
+}
